@@ -1,0 +1,12 @@
+PS C:\Users\sonu8\OneDrive\Desktop\Daa lab\lab1\Lab-1-again\Lab- 1\Q1\output> & .\'Q1_funcs.exe'
+Enter a value of n to display the increasing order of functions (n >= 1): 100
+
+Increasing order of functions for n = 100:
+
+1/n < log2(n) < n^0.51 < 12sqrt(n) < 50sqrt(n) < nlog2(n) < n^2-324 < 100n^2+6n < 2n^3 < 2^32*n < n^(log2 n) < 3^n
+
+Enter the maximum value of n for plotting: 1000
+         line 0: warning: y axis range undefined or overflow, resetting to [0:0]
+
+Graph plotted successfully.
+PS C:\Users\sonu8\OneDrive\Desktop\Daa lab\lab1\Lab-1-again\Lab- 1\Q1\output> 

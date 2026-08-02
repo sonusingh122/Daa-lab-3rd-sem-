@@ -1,0 +1,3 @@
+Enter the number of disks: 20
+Simulation complete. GNUplot window opened successfully.
+PS C:\Users\sonu8\OneDrive\Desktop\Daa lab\lab1\Lab-1-again\Lab- 1\Q4\output> 

@@ -1,0 +1,8 @@
+Enter the total number of tosses to simulate: 45
+Enter the bias probability for the biased coin (e.g. 0.7 for 70% heads): 0.8
+
+Final probability of heads (Fair coin): 0.444444
+Final probability of heads (Biased coin, target 0.80): 0.733333
+
+Graph plotted successfully.
+PS C:\Users\sonu8\OneDrive\Desktop\Daa lab\lab1\Lab-1-again\Lab- 1\Q3\output> 
