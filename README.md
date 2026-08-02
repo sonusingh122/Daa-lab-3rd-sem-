@@ -5,9 +5,9 @@ Solutions and code for the DAA Lab coursework.
 ## About
 
 - **Institute:** International Institute of Information Technology (IIIT), Bhubaneswar
-- **Department:** Computer Science Engineering (CSEB)
+- **Department:** Computer Science Engineering (CSE-B)
 - **Semester:** 3rd Semester, B.Tech
-- **Section:** CSE B2
+- **Section:** CSE B-2
 
 ## Student Details
 
