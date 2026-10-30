@@ -1,71 +1,96 @@
-
 #include <stdio.h>
 
 #define MAX 1000
 
-int heap[MAX], size = 0;
+int parent[MAX], size[MAX];
+long long sum[MAX];
 
-void push(int x) {
-    int i = ++size;
-    while (i > 1 && heap[i / 2] < x) {
-        heap[i] = heap[i / 2];
-        i /= 2;
-    }
-    heap[i] = x;
+int find(int x){
+    if (parent[x] != x)
+        parent[x] = find(parent[x]);
+
+    return parent[x];
 }
 
-int pop() {
-    int result = heap[1], x = heap[size--], i = 1, c;
+void unite(int u, int v){
+    int ru = find(u);
+    int rv = find(v);
 
-    while (2 * i <= size) {
-        c = 2 * i;
-        if (c + 1 <= size && heap[c + 1] > heap[c])
-            c++;
-        if (heap[c] <= x) break;
-        heap[i] = heap[c];
-        i = c;
+    if (ru == rv)
+        return;
+
+    if (size[ru] < size[rv]){
+        int temp = ru;
+        ru = rv;
+        rv = temp;
     }
 
-    heap[i] = x;
-    return result;
+    parent[rv] = ru;
+    size[ru] += size[rv];
+    sum[ru] += sum[rv];
 }
 
-int main() {
-    int n, d[MAX], f[MAX], i, stops = 0;
-    int D, F, position = 0, fuel;
+long long maximumWeight(int V, int K){
+    long long maximum = 0;
 
-    printf("Enter destination distance and initial fuel: ");
-    scanf("%d %d", &D, &F);
-
-    printf("Enter number of stations: ");
-    scanf("%d", &n);
-
-    for (i = 0; i < n; i++) {
-        printf("Enter station distance and fuel: ");
-        scanf("%d %d", &d[i], &f[i]);
+    for (int i = 0; i < V; i++){
+        if (parent[i] == i && size[i] <= K){
+            if (sum[i] > maximum)
+                maximum = sum[i];
+        }
     }
 
-    fuel = F;
+    return maximum;
+}
 
-    for (i = 0; i <= n; i++) {
-        int next = (i == n) ? D : d[i];
-        fuel -= next - position;
+int main(){
+    int V, E, K;
 
-        while (fuel < 0 && size > 0) {
-            fuel += pop();
-            stops++;
-        }
+    printf("Enter number of vertices: ");
+    scanf("%d", &V);
 
-        if (fuel < 0) {
-            printf("Destination cannot be reached.\n");
-            return 0;
-        }
-
-        position = next;
-        if (i < n)
-            push(f[i]);
+    if (V <= 0 || V > MAX){
+        printf("Invalid number of vertices.\n");
+        return 0;
     }
 
-    printf("Minimum refuelling stops = %d\n", stops);
+    for (int i = 0; i < V; i++){
+        parent[i] = i;
+        size[i] = 1;
+
+        printf("Enter weight of vertex %d: ", i);
+        scanf("%lld", &sum[i]);
+    }
+
+    printf("Enter maximum component size K: ");
+    scanf("%d", &K);
+
+    if (K < 1 || K > V){
+        printf("Invalid K value.\n");
+        return 0;
+    }
+
+    printf("Enter number of edges: ");
+    scanf("%d", &E);
+
+    printf("\nEnter edges one by one:\n");
+
+    for (int i = 0; i < E; i++){
+        int u, v;
+
+        scanf("%d %d", &u, &v);
+
+        if (u < 0 || u >= V || v < 0 ||
+            v >= V || u == v){
+            printf("Invalid edge.\n");
+            continue;
+        }
+
+        unite(u, v);
+
+        printf("Maximum eligible component weight = %lld\n",
+               maximumWeight(V, K));
+    }
+
     return 0;
 }

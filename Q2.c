@@ -1,97 +1,102 @@
-
 #include <stdio.h>
-#include <stdlib.h>
 
-#define MAX 100
+#define MAX 10000
 
-typedef struct {
-    int freq, left, right, symbol;
-} Node;
+int parent[MAX];
+int rankArr[MAX];
 
-Node t[2 * MAX];
-char symbols[MAX];
-int lengths[MAX], code[MAX];
-int n, total;
+int find(int x)
+{
+    if (parent[x] != x)
+        parent[x] = find(parent[x]);
 
-void getLength(int node, int depth) {
-    if (t[node].left == -1 && t[node].right == -1) {
-        lengths[t[node].symbol] = depth ? depth : 1;
-        return;
-    }
-    getLength(t[node].left, depth + 1);
-    getLength(t[node].right, depth + 1);
+    return parent[x];
 }
 
-int main() {
-    int i, j;
+int unite(int a, int b){
+    int ra = find(a);
+    int rb = find(b);
 
-    printf("Enter number of symbols: ");
-    scanf("%d", &n);
+    if (ra == rb)
+        return 0;
 
-    for (i = 0; i < n; i++) {
-        printf("Enter symbol and frequency: ");
-        scanf(" %c %d", &symbols[i], &t[i].freq);
-        t[i].symbol = i;
-        t[i].left = t[i].right = -1;
+    if (rankArr[ra] < rankArr[rb])
+        parent[ra] = rb;
+
+    else if (rankArr[ra] > rankArr[rb])
+        parent[rb] = ra;
+
+    else{
+        parent[rb] = ra;
+        rankArr[ra]++;
     }
-    total = n;
 
-    for (i = 0; i < n - 1; i++) {
-        int a = -1, b = -1;
+    return 1;
+}
 
-        for (j = 0; j < total; j++) {
-            if (t[j].symbol == -2) continue;
-            if (a == -1 || t[j].freq < t[a].freq) {
-                b = a;
-                a = j;
-            } else if (b == -1 || t[j].freq < t[b].freq) {
-                b = j;
+int main(){
+    int R, C, K;
+    int grid[100][100] = {0};
+    int islands = 0;
+
+    int dr[] = {-1, 1, 0, 0};
+    int dc[] = {0, 0, -1, 1};
+
+    printf("Enter rows and columns: ");
+    scanf("%d %d", &R, &C);
+
+    if (R <= 0 || C <= 0 || R > 100 ||
+        C > 100 || R * C > MAX){
+        printf("Invalid grid size.\n");
+        return 0;
+    }
+
+    for (int i = 0; i < R * C; i++){
+        parent[i] = i;
+        rankArr[i] = 0;
+    }
+
+    printf("Enter number of land additions: ");
+    scanf("%d", &K);
+
+    printf("\nEnter positions (row column):\n");
+
+    for (int i = 0; i < K; i++){
+        int r, c;
+
+        scanf("%d %d", &r, &c);
+
+        if (r < 0 || r >= R || c < 0 || c >= C){
+            printf("Invalid position. Islands = %d\n",
+                   islands);
+            continue;
+        }
+
+        if (grid[r][c] == 1){
+            printf("Already land. Islands = %d\n", islands);
+            continue;
+        }
+
+        grid[r][c] = 1;
+        islands++;
+
+        int id = r * C + c;
+
+        for (int j = 0; j < 4; j++){
+            int nr = r + dr[j];
+            int nc = c + dc[j];
+
+            if (nr >= 0 && nr < R &&
+                nc >= 0 && nc < C &&
+                grid[nr][nc] == 1){
+                int nid = nr * C + nc;
+
+                if (unite(id, nid))
+                    islands--;
             }
         }
 
-        t[a].symbol = -2;
-        t[b].symbol = -2;
-
-        t[total].freq = t[a].freq + t[b].freq;
-        t[total].left = a;
-        t[total].right = b;
-        t[total].symbol = -1;
-        total++;
-    }
-
-    getLength(total - 1, 0);
-
-    // Sort symbols by length, then by character
-    for (i = 0; i < n - 1; i++)
-        for (j = i + 1; j < n; j++)
-            if (lengths[i] > lengths[j] ||
-               (lengths[i] == lengths[j] &&
-                symbols[i] > symbols[j])) {
-                int x = lengths[i];
-                lengths[i] = lengths[j];
-                lengths[j] = x;
-
-                char c = symbols[i];
-                symbols[i] = symbols[j];
-                symbols[j] = c;
-            }
-
-    unsigned int c = 0;
-    int previousLength = lengths[0];
-
-    printf("\nCanonical Huffman Codes:\n");
-    for (i = 0; i < n; i++) {
-        if (i > 0) {
-            c++;
-            c <<= lengths[i] - previousLength;
-        }
-
-        printf("%c : ", symbols[i]);
-        for (j = lengths[i] - 1; j >= 0; j--)
-            printf("%d", (c >> j) & 1);
-
-        printf("\n");
-        previousLength = lengths[i];
+        printf("Number of islands = %d\n", islands);
     }
 
     return 0;
